@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#C8102E"/>
+<link rel="manifest" href="./app.webmanifest"/>
+<title>Китай 8–23 апреля</title>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#111827;color:white;padding:20px}
+h1{text-align:center}
+.card{background:rgba(255,255,255,0.08);padding:15px;border-radius:16px;margin-bottom:12px}
+button{background:#C8102E;border:none;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;margin-top:8px}
+.details{display:none;margin-top:8px;font-size:14px}
+</style>
+</head>
+<body>
+<h1>🇨🇳 Поездка в Китай</h1>
+
+<div class="card"><b>8–9 апр</b> — Москва → Чунцин<button onclick="toggle(this)">Подробнее</button><div class="details">Прилёт, Hongyadong.</div></div>
+<div class="card"><b>10–11 апр</b> — Чунцин<button onclick="toggle(this)">Подробнее</button><div class="details">Liziba, Raffles City.</div></div>
+<div class="card"><b>12–14 апр</b> — Чжанцзяцзе<button onclick="toggle(this)">Подробнее</button><div class="details">Горы Аватар.</div></div>
+<div class="card"><b>15 апр</b> — Фэнхуан<button onclick="toggle(this)">Подробнее</button><div class="details">Древний город.</div></div>
+<div class="card"><b>16–19 апр</b> — Яншо<button onclick="toggle(this)">Подробнее</button><div class="details">Yulong River.</div></div>
+<div class="card"><b>20–22 апр</b> — Гуанчжоу<button onclick="toggle(this)">Подробнее</button><div class="details">Canton Tower.</div></div>
+<div class="card"><b>23 апр</b> — Возвращение</div>
+
+<script>
+function toggle(btn){
+const d=btn.nextElementSibling;
+d.style.display=d.style.display==='block'?'none':'block';
+}
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('./sw.js');
+}
+</script>
+</body>
+</html>
