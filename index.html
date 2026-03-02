@@ -1,37 +1,1343 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="theme-color" content="#C8102E"/>
-<link rel="manifest" href="./app.webmanifest"/>
-<title>Китай 8–23 апреля</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#d40000" />
+<title>China Trip 2026</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+
 <style>
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#111827;color:white;padding:20px}
-h1{text-align:center}
-.card{background:rgba(255,255,255,0.08);padding:15px;border-radius:16px;margin-bottom:12px}
-button{background:#C8102E;border:none;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;margin-top:8px}
-.details{display:none;margin-top:8px;font-size:14px}
+:root{
+  --bg:#f2f2f7;
+  --card:rgba(255,255,255,.92);
+  --text:#111827;
+  --muted:#6b7280;
+  --shadow:0 8px 20px rgba(0,0,0,.10);
+  --stroke:rgba(17,24,39,.10);
+  --r:18px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45}
+.wrap{max-width:980px;margin:0 auto;padding:14px}
+header{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:20;border:1px solid var(--stroke)}
+h1{font-size:18px;margin:0 0 6px 0}
+.sub{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border-radius:999px;background:#eef2ff;font-size:13px;font-weight:800}
+.chip.action{background:#111827;color:#fff;text-decoration:none}
+.chip.gray{background:#e5e7eb;color:#111827;text-decoration:none}
+.dot{width:10px;height:10px;border-radius:50%}
+.sep{height:1px;background:rgba(17,24,39,.08);margin:10px 0}
+.mini{font-size:12px;color:var(--muted)}
+
+details.day, details.city{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin:12px 0;overflow:hidden;border:1px solid var(--stroke)}
+details.day > summary, details.city > summary{cursor:pointer;list-style:none;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+details.day > summary::-webkit-details-marker, details.city > summary::-webkit-details-marker{display:none}
+.sumLeft{display:flex;gap:10px;align-items:flex-start}
+.badge{min-width:10px;min-height:10px;width:10px;height:10px;border-radius:50%}
+.sumTitle{display:flex;flex-direction:column;gap:2px}
+.sumTitle .t{font-size:15px;font-weight:900}
+.sumTitle .m{font-size:13px;color:var(--muted)}
+.sumRight{font-size:12px;color:var(--muted)}
+.content{padding:0 14px 14px 14px}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:860px){ .grid{grid-template-columns: 1.25fr .75fr} }
+.card{border:1px solid rgba(17,24,39,.08);border-radius:16px;padding:12px;background:#fff}
+.card h3{margin:0 0 8px 0;font-size:14px}
+.copyBox{display:flex;flex-direction:column;gap:10px}
+textarea.copy{width:100%;min-height:92px;resize:vertical;border-radius:14px;border:1px solid rgba(17,24,39,.12);padding:10px;font-size:13px;line-height:1.35}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+button{border:0;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer}
+.btnCopy{background:#111827;color:#fff}
+.btnOpen{background:#e5e7eb;color:#111827}
+
+main{padding-bottom: calc(92px + env(safe-area-inset-bottom));}
+.screen{display:none}
+.screen.active{display:block}
+
+.tabbar{
+  position:fixed;
+  left:12px; right:12px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.80);
+  border: 1px solid var(--stroke);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index:60;
+  display:flex;
+  gap:8px;
+  padding:8px;
+}
+.tab{
+  flex:1;
+  min-height: 56px;
+  border-radius: 18px;
+  border: 1px solid transparent;
+  background: transparent;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  font-weight:950;
+  font-size:12px;
+  color: var(--muted);
+  cursor:pointer;
+}
+.tab .ico{font-size:18px; line-height:18px}
+.tab.active{
+  background: rgba(212,0,0,.12);
+  border-color: rgba(212,0,0,.22);
+  color: var(--text);
+}
+
+.progressWrap{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.progressTop{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.progressTop .left{font-size:12.5px;color:var(--muted);font-weight:900}
+.progressTop .right{font-size:12.5px;color:var(--muted);font-weight:900;white-space:nowrap}
+.bar{width:100%;height:10px;border-radius:999px;background: rgba(107,114,128,.20);border:1px solid rgba(107,114,128,.22);overflow:hidden}
+.bar>div{height:100%;width:0%;border-radius:999px;background: linear-gradient(90deg, rgba(212,0,0,.85), rgba(255,215,0,.85))}
+.todayPill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border-radius:999px;background: rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.22);font-size:12.5px;font-weight:950;width:fit-content}
+.offlinePill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border-radius:999px;background: rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.22);font-size:12.5px;font-weight:950;width:fit-content}
 </style>
 </head>
 <body>
-<h1>🇨🇳 Поездка в Китай</h1>
+<div class="wrap" id="top">
+<header>
+  <h1>🇨🇳 China Trip — план (8–23 апреля 2026)</h1>
+  <div class="sub">Вкладки внизу: маршрут / еда / адреса. Копируй китайский адрес → вставляй в DiDi.</div>
 
-<div class="card"><b>8–9 апр</b> — Москва → Чунцин<button onclick="toggle(this)">Подробнее</button><div class="details">Прилёт, Hongyadong.</div></div>
-<div class="card"><b>10–11 апр</b> — Чунцин<button onclick="toggle(this)">Подробнее</button><div class="details">Liziba, Raffles City.</div></div>
-<div class="card"><b>12–14 апр</b> — Чжанцзяцзе<button onclick="toggle(this)">Подробнее</button><div class="details">Горы Аватар.</div></div>
-<div class="card"><b>15 апр</b> — Фэнхуан<button onclick="toggle(this)">Подробнее</button><div class="details">Древний город.</div></div>
-<div class="card"><b>16–19 апр</b> — Яншо<button onclick="toggle(this)">Подробнее</button><div class="details">Yulong River.</div></div>
-<div class="card"><b>20–22 апр</b> — Гуанчжоу<button onclick="toggle(this)">Подробнее</button><div class="details">Canton Tower.</div></div>
-<div class="card"><b>23 апр</b> — Возвращение</div>
+  <div class="progressWrap" role="status" aria-live="polite">
+    <div class="progressTop">
+      <div class="left" id="progressText">Прогресс поездки</div>
+      <div class="right" id="countdownText"></div>
+    </div>
+    <div class="bar"><div id="progressFill"></div></div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <div class="todayPill" id="todayPill" style="display:none;">📍 Сегодня: <span id="todayLabel"></span></div>
+      <div class="offlinePill" id="offlinePill" style="display:none;">📶 Офлайн-режим</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <a class="chip action" href="#top" onclick="scrollTopSmooth(); return false;">Вверх</a>
+    <a class="chip gray" href="#" onclick="exportICS(); return false;">📆 В календарь</a>
+  </div>
+</header>
+
+<main>
+<section class="screen active" id="screen-route" aria-label="Маршрут">
+<details class="day">
+  <div class="cityStripe" style="background:var(--bj)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--bj)"></div>
+      <div class="sumTitle">
+        <div class="t">8 апреля (ср) — ✈ Москва → Пекин</div>
+        <div class="m">MU2076 • 17:15 SVO → 05:30 (+1) PKX</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>✈️ Перелёт</h3>
+        <ul>
+          <li><b>Рейс:</b> MU2076</li>
+          <li><b>Вылет:</b> 17:15 • Москва Шереметьево (SVO)</li>
+          <li><b>Прилёт:</b> 05:30 (+1) • Пекин Дасин (PKX / 北京大兴国际机场)</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>🧳 Подсказки</h3>
+        <ul>
+          <li>Держите паспорт/посадочные под рукой.</li>
+          <li>Установите/проверьте: Alipay, Trip.com.</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>🗺️ Карты</h3>
+        <div class="mapLinks">
+          <a class="map" href="https://uri.amap.com/search?keyword=北京大兴国际机场" target="_blank">🟦 Amap: PKX</a>
+          <a class="map" href="https://map.baidu.com/search/北京大兴国际机场" target="_blank">🟥 Baidu: PKX</a>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать в DiDi/Trip</h3>
+        <textarea class="copy" id="d0804a" readonly>北京大兴国际机场 (Beijing Daxing International Airport, PKX)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d0804a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('北京大兴国际机场')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+        <div class="mini">Если DiDi не открывается — это ок, вам понадобится завтра (для ориентира).</div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--cq)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--cq)"></div>
+      <div class="sumTitle">
+        <div class="t">9 апреля (чт) — ✈ Пекин → Чунцин + 🏨 заселение</div>
+        <div class="m">MU6681 • 07:15 PKX → 10:00 CKG T3 • Отель 9–12 апр</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>✈️ Перелёт</h3>
+        <ul>
+          <li><b>Рейс:</b> MU6681</li>
+          <li><b>Вылет:</b> 07:15 • Пекин Дасин (PKX)</li>
+          <li><b>Прилёт:</b> 10:00 • Чунцин Цзянбэй (CKG) T3</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>🏨 Отель (Чунцин) — 9–12 апреля</h3>
+        <p class="p">
+          <b>Отель:</b> HONGYADONG HOLIDAY RIVERSIDE HOTEL<br>
+          <b>Китайское название/адрес:</b> <span class="k">лучше взять из Trip и вставить сюда</span><br>
+          <span class="mini">Ниже я оставил рабочий “ориентир-адрес”, но лучше заменить на точный из брони.</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🚖 Аэропорт CKG → отель</h3>
+        <ul>
+          <li><b>Проще всего:</b> DiDi/такси до отеля (с багажом удобно)</li>
+          <li>Время: 35–60 минут • <span class="price">¥80–150</span></li>
+          <li><b>Дешевле:</b> метро (если хочется) — зависит от точной точки отеля</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>🌙 Вечер (пешком/рядом)</h3>
+        <ul>
+          <li>🏮 洪崖洞 (Hongyadong) — вечерняя подсветка</li>
+          <li>🌉 набережная</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня (ориентир)</h3>
+        <div class="budget">
+          <div class="line"><span>Такси/DiDi</span><b>¥80–150</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать в DiDi/Trip</h3>
+        <textarea class="copy" id="d0904a" readonly>重庆江北国际机场T3 (Chongqing Jiangbei International Airport T3, CKG)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d0904a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('重庆江北国际机场 T3')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+
+        <textarea class="copy" id="d0904b" readonly>HONGYADONG HOLIDAY RIVERSIDE HOTEL (洪崖洞附近 — лучше вставить точный китайский адрес из Trip)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d0904b')">📋 Скопировать</button>
+        </div>
+
+        <textarea class="copy" id="d0904c" readonly>洪崖洞</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d0904c')">📋 Скопировать: 洪崖洞</button>
+        </div>
+
+        <div class="mini">👉 Откройте бронь отеля в Trip → “Адрес” → копируйте китайский → замените строку выше.</div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--cq)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--cq)"></div>
+      <div class="sumTitle">
+        <div class="t">10 апреля (пт) — Чунцин: прогулки и виды 🌃</div>
+        <div class="m">Liziba • Kuixinglou • Raffles City • канатка</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 План (пример)</h3>
+        <ul>
+          <li>🏙 李子坝 (Liziba) — метро в доме</li>
+          <li>🏙 魁星楼 (Kuixinglou) — “уровни города”</li>
+          <li>🏢 来福士广场 (Raffles City)</li>
+          <li>🚡 长江索道 (канатка через реку) — по желанию</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Метро/DiDi</span><b>¥30–120</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+          <div class="line"><span>Канатка (опц.)</span><b>¥30–60</b></div>
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>🗺️ Карты</h3>
+        <div class="mapLinks">
+          <a class="map" href="https://uri.amap.com/search?keyword=李子坝" target="_blank">🟦 Amap: 李子坝</a>
+          <a class="map" href="https://uri.amap.com/search?keyword=魁星楼" target="_blank">🟦 Amap: 魁星楼</a>
+          <a class="map" href="https://uri.amap.com/search?keyword=来福士广场 重庆" target="_blank">🟦 Amap: 来福士</a>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать в DiDi</h3>
+        <textarea class="copy" id="d1004a" readonly>李子坝</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1004a')">📋 Скопировать</button></div>
+
+        <textarea class="copy" id="d1004b" readonly>魁星楼</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1004b')">📋 Скопировать</button></div>
+
+        <textarea class="copy" id="d1004c" readonly>长江索道</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1004c')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--cq)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--cq)"></div>
+      <div class="sumTitle">
+        <div class="t">11 апреля (сб) — Чунцин: свободный день + подготовка к поезду 🚄</div>
+        <div class="m">Собрать вещи • проверить билеты • вечером отдых</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>✅ Что сделать сегодня</h3>
+        <ul>
+          <li>Проверить в Trip/12306: поезд на 12 апреля</li>
+          <li>Сохранить адреса вокзалов/отелей в заметки</li>
+          <li>Заранее в DiDi поставить точку <b>重庆北站</b> (Chongqing North)</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Перемещения</span><b>¥20–80</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>🗺️ Карты</h3>
+        <div class="mapLinks">
+          <a class="map" href="https://uri.amap.com/search?keyword=重庆北站" target="_blank">🟦 Amap: 重庆北站</a>
+          <a class="map" href="https://map.baidu.com/search/重庆北站" target="_blank">🟥 Baidu: 重庆北站</a>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1104a" readonly>重庆北站 (Chongqing North Railway Station)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d1104a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('重庆北站')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+        <textarea class="copy" id="d1104b" readonly>Trip/12306 поиск: 重庆北站 → 张家界西站 (дата: 4月12日)</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1104b')">📋 Скопировать запрос</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--zjj)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--zjj)"></div>
+      <div class="sumTitle">
+        <div class="t">12 апреля (вс) — 🚄 Чунцин → Чжанцзяцзе + 🏨 заселение</div>
+        <div class="m">Отель Manyuan Resort Hotel • 12–15 апр</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🚄 Поезд (покупка/поиск)</h3>
+        <p class="p">
+          <b>Откуда:</b> 重庆北站 (Chongqing North)<br>
+          <b>Куда:</b> 张家界西站 (Zhangjiajie West)<br>
+          <b>Дата:</b> 4月12日<br>
+          <b>Ваш поезд:</b> <span class="k">____ ____–____</span>
+        </p>
+        <ul>
+          <li>Обычно выбирайте “G/D” (скоростные) или самый удобный по времени.</li>
+          <li>Приезжайте на вокзал за 45–60 минут (паспорт вместо билета).</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>🏨 Отель (Чжанцзяцзе) — 12–15 апреля</h3>
+        <p class="p">
+          <b>Manyuan Resort Hotel</b><br>
+          Район: Wulingyuan (武陵源区)<br>
+          <b>Китайский адрес:</b> <span class="k">скопируйте из Trip и вставьте</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🚖 Станция → отель</h3>
+        <ul>
+          <li>DiDi/такси: 40–60 минут • <span class="price">¥80–120</span></li>
+          <li>Точку лучше ставить по <b>китайскому адресу из брони</b>.</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Поезд</span><b>¥200–350</b></div>
+          <div class="line"><span>Такси до отеля</span><b>¥80–120</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1204a" readonly>张家界西站 (Zhangjiajie West Railway Station)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d1204a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('张家界西站')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+        <textarea class="copy" id="d1204b" readonly>Trip/12306 поиск: 重庆北站 → 张家界西站 • 4月12日</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1204b')">📋 Скопировать запрос</button></div>
+        <textarea class="copy" id="d1204c" readonly>Manyuan Resort Hotel (张家界市武陵源区… — вставьте точный китайский адрес из Trip)</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1204c')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--zjj)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--zjj)"></div>
+      <div class="sumTitle">
+        <div class="t">13 апреля (пн) — 🏔 Парк Аватара: классический маршрут</div>
+        <div class="m">Bailong → Yuanjiajie → Tianzi</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 План (лучший “первый день” в парке)</h3>
+        <ul>
+          <li>Вход Wulingyuan: 武陵源标志门</li>
+          <li>🛗 百龙天梯 (Bailong Elevator) — наверх</li>
+          <li>🏔 袁家界 (Yuanjiajie) — “Аватар”</li>
+          <li>🚍 автобус → 天子山 (Tianzi Mountain)</li>
+          <li>⬇️ спуск автобусом/канаткой</li>
+        </ul>
+
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Еда/вода</span><b>¥80–180</b></div>
+          <div class="line"><span>Лифт/канатки (опц.)</span><b>¥70–150</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1304a" readonly>武陵源标志门</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1304a')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1304b" readonly>百龙天梯</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1304b')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1304c" readonly>袁家界</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1304c')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1304d" readonly>天子山</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1304d')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--zjj)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--zjj)"></div>
+      <div class="sumTitle">
+        <div class="t">14 апреля (вт) — 🏞 Чжанцзяцзе: второй день (спокойнее)</div>
+        <div class="m">Golden Whip Stream / Ten-mile Gallery / отдых</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 Вариант маршрута</h3>
+        <ul>
+          <li>金鞭溪 (Golden Whip Stream) — красивая долина</li>
+          <li>十里画廊 (Ten-mile Gallery)</li>
+          <li>Вечером — ранний сон (завтра переезд)</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Еда/вода</span><b>¥80–180</b></div>
+          <div class="line"><span>Мелкие траты</span><b>¥20–60</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1404a" readonly>金鞭溪</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1404a')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1404b" readonly>十里画廊</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1404b')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--fh)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--fh)"></div>
+      <div class="sumTitle">
+        <div class="t">15 апреля (ср) — 🚄 Чжанцзяцзе → Фэнхуан + 🏨 1 ночь</div>
+        <div class="m">Shuyi Homestay • 15–16 апр</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🚄 Поезд (поиск)</h3>
+        <p class="p">
+          <b>Откуда:</b> 张家界西站<br>
+          <b>Куда:</b> 凤凰古城站 (Fenghuang Gucheng)<br>
+          <b>Дата:</b> 4月15日<br>
+          <b>Ваш поезд:</b> <span class="k">____ ____–____</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🏨 Отель (Фэнхуан) — 15–16 апреля</h3>
+        <p class="p">
+          <b>Shuyi Homestay</b><br>
+          <b>Китайский адрес:</b> <span class="k">скопируйте из Trip и вставьте</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🚖 Станция → старый город</h3>
+        <ul>
+          <li>DiDi/такси: ~20 минут • <span class="price">¥20–35</span></li>
+          <li>Вечером обязательно прогулка — самый красивый свет.</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Поезд</span><b>¥60–150</b></div>
+          <div class="line"><span>Такси</span><b>¥20–60</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1504a" readonly>凤凰古城站 (Fenghuang Gucheng Railway Station)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d1504a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('凤凰古城站')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+        <textarea class="copy" id="d1504b" readonly>凤凰古城</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1504b')">📋 Скопировать: 凤凰古城</button></div>
+        <textarea class="copy" id="d1504c" readonly>Trip/12306 поиск: 张家界西站 → 凤凰古城站 • 4月15日</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1504c')">📋 Скопировать запрос</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--ys)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--ys)"></div>
+      <div class="sumTitle">
+        <div class="t">16 апреля (чт) — 🚄 Фэнхуан → Гуйлинь → Яншо + 🏨 заселение</div>
+        <div class="m">Yangshuo Yuyuan Resort • 16–20 апр</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🚄 Поезд (поиск)</h3>
+        <p class="p">
+          <b>Откуда:</b> 凤凰古城站<br>
+          <b>Куда:</b> 桂林北站 (Guilin North) — чаще всего удобнее<br>
+          <b>Дата:</b> 4月16日<br>
+          <b>Ваш поезд:</b> <span class="k">____ ____–____</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🚖 Гуйлинь → Яншо (до отеля)</h3>
+        <p class="p">
+          <b>Отель:</b> Yangshuo Yuyuan Resort (Shili Gallery & Yulong River)<br>
+          <b>Китайское название:</b> 阳朔遇源景舍（十里画廊遇龙河店）<br>
+          <b>Ориентир-район:</b> 阳朔县十里画廊遇龙河景区<br>
+          <span class="mini">Лучше всего: скопировать точный китайский адрес отеля из Trip → вставлять в DiDi.</span>
+        </p>
+        <ul>
+          <li>Время: 1ч20–1ч40 • <span class="price">¥180–240</span></li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>🏨 Отель (Яншо) — 16–20 апреля</h3>
+        <p class="p">
+          <b>Yangshuo Yuyuan Resort</b><br>
+          Номер: Mi Jing River-View... (как в брони)<br>
+          Адрес: <span class="k">скопируйте из Trip и вставьте</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Поезд</span><b>¥100–250</b></div>
+          <div class="line"><span>Такси Гуйлинь→Яншо</span><b>¥180–240</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1604a" readonly>桂林北站 (Guilin North Railway Station)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d1604a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('桂林北站')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+
+        <textarea class="copy" id="d1604b" readonly>阳朔遇源景舍（十里画廊遇龙河店）</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1604b')">📋 Скопировать: отель</button></div>
+
+        <textarea class="copy" id="d1604c" readonly>阳朔县十里画廊遇龙河景区</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d1604c')">📋 Скопировать: район</button>
+          <button class="btnOpen" onclick="openAmap('阳朔县十里画廊遇龙河景区')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+
+        <textarea class="copy" id="d1604d" readonly>Trip/12306 поиск: 凤凰古城站 → 桂林北站 • 4月16日</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1604d')">📋 Скопировать запрос</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--ys)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--ys)"></div>
+      <div class="sumTitle">
+        <div class="t">17 апреля (пт) — Яншо: Yulong River + Shili Gallery 🚲</div>
+        <div class="m">Электробайк/велосипед • прогулки • фото</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 План</h3>
+        <ul>
+          <li>Аренда электробайка рядом с отелем</li>
+          <li>遇龙河 (Yulong River) — прогулка/плоты по желанию</li>
+          <li>十里画廊 (Shili Gallery)</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Электробайк</span><b>¥40–60</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+          <div class="line"><span>Активности</span><b>¥80–200</b></div>
+        </div>
+      </div>
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1704a" readonly>遇龙河</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1704a')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1704b" readonly>十里画廊</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1704b')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--ys)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--ys)"></div>
+      <div class="sumTitle">
+        <div class="t">18 апреля (сб) — Яншо: Xingping + река Ли 🚤</div>
+        <div class="m">“вид с 20 юаней” • прогулки • фото</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 План</h3>
+        <ul>
+          <li>DiDi до 兴坪古镇 (Xingping Ancient Town) — 40–60 минут</li>
+          <li>兴坪码头 (пирс) / виды на 漓江 (река Ли)</li>
+          <li>Возвращение в отель</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>DiDi туда-обратно</span><b>¥120–220</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+          <div class="line"><span>Лодка (опц.)</span><b>¥80–200</b></div>
+        </div>
+      </div>
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1804a" readonly>兴坪古镇</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1804a')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1804b" readonly>兴坪码头</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1804b')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1804c" readonly>漓江</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1804c')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--ys)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--ys)"></div>
+      <div class="sumTitle">
+        <div class="t">19 апреля (вс) — Яншо: свободный день + подготовка к поезду 🚄</div>
+        <div class="m">Отдых • шопинг • проверка билетов на 20 апреля</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>✅ Что сделать</h3>
+        <ul>
+          <li>Проверить/купить поезд на 20 апреля: 阳朔站 → 广州南站</li>
+          <li>Сохранить вокзал Yangshuo Station в DiDi</li>
+          <li>Собрать вещи (утром ранний выезд удобнее)</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Перемещения</span><b>¥20–80</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+      </div>
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d1904a" readonly>阳朔站 (Yangshuo Railway Station)</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1904a')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d1904b" readonly>Trip/12306 поиск: 阳朔站 → 广州南站 • 4月20日</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d1904b')">📋 Скопировать запрос</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--gz)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--gz)"></div>
+      <div class="sumTitle">
+        <div class="t">20 апреля (пн) — 🚄 Яншо → Гуанчжоу + 🏨 заселение</div>
+        <div class="m">Echarm PLUS • 20–23 апр • Wuyangcun</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🚄 Поезд (поиск)</h3>
+        <p class="p">
+          <b>Откуда:</b> 阳朔站 (Yangshuo Station)<br>
+          <b>Куда:</b> 广州南站 (Guangzhou South)<br>
+          <b>Дата:</b> 4月20日<br>
+          <b>Ваш поезд:</b> <span class="k">____ ____–____</span>
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🏨 Отель (Гуанчжоу) — 20–23 апреля</h3>
+        <p class="p">
+          <b>Echarm PLUS Hotel (Guangzhou Zhujiang New Town Wuyangcun Subway Station)</b><br>
+          <b>Китайское название:</b> 宜尚PLUS酒店（广州珠江新城五羊邨地铁站店）<br>
+          <b>Ориентир/адрес (CN):</b> 广州市天河区珠江新城五羊邨<br>
+          <b>Метро:</b> 五羊邨站 (Wuyangcun)
+        </p>
+
+        <div class="sep"></div>
+
+        <h3>🚖 Вокзал → отель</h3>
+        <ul>
+          <li>DiDi/такси: 35–60 минут • <span class="price">¥80–140</span></li>
+          <li>Если без багажа и хочется дешевле: метро (но с чемоданами такси проще).</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Поезд</span><b>¥120–220</b></div>
+          <div class="line"><span>Такси</span><b>¥80–140</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d2004a" readonly>广州南站 (Guangzhou South Railway Station)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d2004a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('广州南站')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+
+        <textarea class="copy" id="d2004b" readonly>宜尚PLUS酒店（广州珠江新城五羊邨地铁站店）</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2004b')">📋 Скопировать: отель (CN)</button></div>
+
+        <textarea class="copy" id="d2004c" readonly>广州市天河区珠江新城五羊邨</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d2004c')">📋 Скопировать: адрес</button>
+          <button class="btnOpen" onclick="openAmap('广州市天河区珠江新城五羊邨')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+
+        <textarea class="copy" id="d2004d" readonly>Trip/12306 поиск: 阳朔站 → 广州南站 • 4月20日</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2004d')">📋 Скопировать запрос</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--gz)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--gz)"></div>
+      <div class="sumTitle">
+        <div class="t">21 апреля (вт) — Гуанчжоу: Canton Tower + вечерние виды 🌆</div>
+        <div class="m">广州塔 • 珠江新城 • прогулки</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 План</h3>
+        <ul>
+          <li>🗼 广州塔 (Canton Tower) — лучше ближе к закату</li>
+          <li>🏙 珠江新城 (Zhujiang New Town)</li>
+          <li>🚢 Ночной круиз (по желанию)</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Метро</span><b>¥10–25</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+          <div class="line"><span>Башня/круиз (опц.)</span><b>¥150–350</b></div>
+        </div>
+      </div>
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d2104a" readonly>广州塔</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2104a')">📋 Скопировать: 广州塔</button></div>
+        <textarea class="copy" id="d2104b" readonly>珠江新城</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2104b')">📋 Скопировать: 珠江新城</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--gz)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--gz)"></div>
+      <div class="sumTitle">
+        <div class="t">22 апреля (ср) — Гуанчжоу: старый район / прогулки / шопинг</div>
+        <div class="m">北京路 • 沙面岛 • свободный вечер</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>🧭 План</h3>
+        <ul>
+          <li>🛍 北京路步行街 (Beijing Road)</li>
+          <li>🌿 沙面岛 (Shamian Island) — красивый европейский квартал</li>
+          <li>Вечер: ужин / сборы к перелёту</li>
+        </ul>
+        <div class="sep"></div>
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Метро/DiDi</span><b>¥10–60</b></div>
+          <div class="line"><span>Еда</span><b>¥120–250</b></div>
+          <div class="line"><span>Покупки</span><b>по желанию</b></div>
+        </div>
+      </div>
+      <div class="card copyBox">
+        <h3>📋 Копировать</h3>
+        <textarea class="copy" id="d2204a" readonly>北京路步行街</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2204a')">📋 Скопировать</button></div>
+        <textarea class="copy" id="d2204b" readonly>沙面岛</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2204b')">📋 Скопировать</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+<details class="day">
+  <div class="cityStripe" style="background:var(--bj)"></div>
+  <summary>
+    <div class="sumLeft">
+      <div class="badge" style="background:var(--bj)"></div>
+      <div class="sumTitle">
+        <div class="t">23 апреля (чт) — ✈ Гуанчжоу → Пекин → Москва</div>
+        <div class="m">MU6302 07:35 CAN→PKX 10:25 • MU2075 11:55 PKX→SVO 15:25</div>
+      </div>
+    </div>
+    <div class="sumRight">Открыть ▾</div>
+  </summary>
+  <div class="content">
+    <div class="grid">
+      <div class="card">
+        <h3>✈️ Перелёты</h3>
+        <ul>
+          <li><b>MU6302:</b> 07:35 • CAN (广州白云国际机场) → 10:25 • PKX</li>
+          <li><b>MU2075:</b> 11:55 • PKX → 15:25 • SVO</li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>🚖 Отель → аэропорт CAN</h3>
+        <ul>
+          <li><b>Такси/DiDi:</b> 40–60 мин • <span class="price">¥120–180</span></li>
+          <li><b>Метро:</b> Line 5 → пересадка → Line 3 → аэропорт (если удобно с багажом) • <span class="price">¥8–12</span></li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h3>💰 Бюджет дня</h3>
+        <div class="budget">
+          <div class="line"><span>Такси/метро до аэропорта</span><b>¥10–180</b></div>
+          <div class="line"><span>Перекус/вода</span><b>¥30–80</b></div>
+        </div>
+
+        <div class="sep"></div>
+
+        <h3>🗺️ Карты</h3>
+        <div class="mapLinks">
+          <a class="map" href="https://uri.amap.com/search?keyword=广州白云国际机场" target="_blank">🟦 Amap: CAN</a>
+          <a class="map" href="https://map.baidu.com/search/广州白云国际机场" target="_blank">🟥 Baidu: CAN</a>
+        </div>
+      </div>
+
+      <div class="card copyBox">
+        <h3>📋 Копировать в DiDi/Trip</h3>
+        <textarea class="copy" id="d2304a" readonly>广州白云国际机场 (Guangzhou Baiyun International Airport, CAN)</textarea>
+        <div class="btns">
+          <button class="btnCopy" onclick="copyText('d2304a')">📋 Скопировать</button>
+          <button class="btnOpen" onclick="openAmap('广州白云国际机场')">🟦 Amap</button>
+          <button class="btnOpen" onclick="openAmapQuery("")">🟥 Baidu</button>
+        </div>
+        <textarea class="copy" id="d2304b" readonly>北京大兴国际机场 (PKX)</textarea>
+        <div class="btns"><button class="btnCopy" onclick="copyText('d2304b')">📋 Скопировать: PKX</button></div>
+      </div>
+    </div>
+  </div>
+</details>
+</section>
+
+<section class="screen" id="screen-food" aria-label="Еда">
+  <div class="card">
+    <h2>🍜 Еда</h2>
+    <div class="mini">Шпаргалки и быстрые поисковые запросы для карт.</div>
+  </div>
+
+  <div class="card">
+    <h3>🥘 Hot Pot в Чунцине (重庆火锅)</h3>
+    <div class="sep"></div>
+    <div class="copyBox">
+      <h4>🔎 Найти рядом</h4>
+      <textarea class="copy" id="food_hotpot_search" readonly>重庆火锅</textarea>
+      <div class="btns">
+        <button class="btnCopy" onclick="copyText('food_hotpot_search')">📋 Скопировать</button>
+        <button class="btnOpen" onclick="openAmapQuery('重庆火锅')">🟦 Открыть Amap</button>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+    <h4>🗣️ Фразы официанту (CN)</h4>
+
+    <div class="copyBox">
+      <textarea class="copy" id="food_mild" readonly>我们想要不辣的锅底。</textarea>
+      <div class="btns"><button class="btnCopy" onclick="copyText('food_mild')">📋 Скопировать</button></div>
+      <div class="mini">Не острый бульон.</div>
+    </div>
+
+    <div class="copyBox">
+      <textarea class="copy" id="food_yinyang" readonly>我们要鸳鸯锅，一半辣，一半不辣。</textarea>
+      <div class="btns"><button class="btnCopy" onclick="copyText('food_yinyang')">📋 Скопировать</button></div>
+      <div class="mini">Инь-ян: половина острая / половина не острая.</div>
+    </div>
+
+    <div class="copyBox">
+      <textarea class="copy" id="food_nospicy" readonly>我不太能吃辣。</textarea>
+      <div class="btns"><button class="btnCopy" onclick="copyText('food_nospicy')">📋 Скопировать</button></div>
+      <div class="mini">Я плохо переношу острое.</div>
+    </div>
+
+    <div class="sep"></div>
+    <h4>📖 Для справки</h4>
+    <a class="chip action" href="https://radiotochki.net/blog/travel/kitayskiy-hot-pot-hogo-polnoe-rukovodstvo-dlya-novichkov-ot-vybora-bulona-do-sekretov-sousa.html" rel="noopener">
+      Открыть руководство про хот-пот
+    </a>
+  </div>
+</section>
+
+
+<section class="screen" id="screen-addrs" aria-label="Адреса">
+  <div class="card">
+    <h2>📍 Адреса (CN)</h2>
+    <div class="mini">Скопируй китайский адрес → вставь в DiDi / Amap.</div>
+  </div>
+
+  <div class="card copyBox">
+    <h3>🏨 Чунцин — 重庆假日江畔酒店（解放碑洪崖洞店）</h3>
+    <textarea class="copy" id="addr_cq" readonly>重庆假日江畔酒店（解放碑洪崖洞店）
+重庆市渝中区沧白路73号 永中国际大厦15楼</textarea>
+    <div class="btns">
+      <button class="btnCopy" onclick="copyText('addr_cq')">📋 Скопировать</button>
+      <button class="btnOpen" onclick="openAmapQuery('重庆假日江畔酒店 解放碑洪崖洞店')">🟦 Amap</button>
+    </div>
+  </div>
+
+  <div class="card copyBox">
+    <h3>🏨 Чжанцзяцзе — 曼缘度假酒店（张家界国家森林公园标志门店）</h3>
+    <textarea class="copy" id="addr_zjj" readonly>曼缘度假酒店（张家界国家森林公园标志门店）
+（建议：在Trip里复制中文地址替换这一行）</textarea>
+    <div class="btns">
+      <button class="btnCopy" onclick="copyText('addr_zjj')">📋 Скопировать</button>
+      <button class="btnOpen" onclick="openAmapQuery('曼缘度假酒店 张家界国家森林公园标志门店')">🟦 Amap</button>
+    </div>
+  </div>
+
+  <div class="card copyBox">
+    <h3>🏨 Фэнхуан — 凤凰舒依民宿（凤凰古城店）</h3>
+    <textarea class="copy" id="addr_fh" readonly>凤凰舒依民宿（凤凰古城店）
+（建议：在Trip里复制中文地址替换这一行）</textarea>
+    <div class="btns">
+      <button class="btnCopy" onclick="copyText('addr_fh')">📋 Скопировать</button>
+      <button class="btnOpen" onclick="openAmapQuery('凤凰舒依民宿 凤凰古城店')">🟦 Amap</button>
+    </div>
+  </div>
+
+  <div class="card copyBox">
+    <h3>🏨 Яншо — 阳朔遇源景舍（十里画廊遇龙河店）</h3>
+    <textarea class="copy" id="addr_ys" readonly>阳朔遇源景舍（十里画廊遇龙河店）</textarea>
+    <div class="btns">
+      <button class="btnCopy" onclick="copyText('addr_ys')">📋 Скопировать</button>
+      <button class="btnOpen" onclick="openAmapQuery('阳朔遇源景舍 十里画廊遇龙河店')">🟦 Amap</button>
+    </div>
+  </div>
+
+  <div class="card copyBox">
+    <h3>🚉 Станции (CN)</h3>
+    <textarea class="copy" id="addr_stations" readonly>重庆北站
+张家界西站
+凤凰古城站
+桂林北站
+阳朔站
+广州南站</textarea>
+    <div class="btns">
+      <button class="btnCopy" onclick="copyText('addr_stations')">📋 Скопировать списком</button>
+    </div>
+  </div>
+
+  <div class="card copyBox">
+    <h3>✈️ Аэропорты (CN)</h3>
+    <textarea class="copy" id="addr_air" readonly>北京大兴国际机场
+重庆江北国际机场T3
+广州白云国际机场</textarea>
+    <div class="btns">
+      <button class="btnCopy" onclick="copyText('addr_air')">📋 Скопировать списком</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="tabbar" aria-label="Навигация">
+  <button class="tab active" id="tab-route" onclick="setTab('route')" aria-controls="screen-route" aria-selected="true">
+    <div class="ico">🧭</div><div>Маршрут</div>
+  </button>
+  <button class="tab" id="tab-food" onclick="setTab('food')" aria-controls="screen-food" aria-selected="false">
+    <div class="ico">🍜</div><div>Еда</div>
+  </button>
+  <button class="tab" id="tab-addrs" onclick="setTab('addrs')" aria-controls="screen-addrs" aria-selected="false">
+    <div class="ico">📍</div><div>Адреса</div>
+  </button>
+</nav>
+
+</div>
 
 <script>
-function toggle(btn){
-const d=btn.nextElementSibling;
-d.style.display=d.style.display==='block'?'none':'block';
+function scrollTopSmooth(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+function setTab(key){
+  const keys = ['route','food','addrs'];
+  keys.forEach(k=>{
+    const s = document.getElementById('screen-'+k);
+    const t = document.getElementById('tab-'+k);
+    const on = (k===key);
+    if(s) s.classList.toggle('active', on);
+    if(t){
+      t.classList.toggle('active', on);
+      t.setAttribute('aria-selected', on ? 'true':'false');
+    }
+  });
+  try{ localStorage.setItem('activeTab', key); }catch(e){}
+  window.scrollTo({top:0, behavior:'smooth'});
 }
+try{
+  const saved = localStorage.getItem('activeTab');
+  if(saved && ['route','food','addrs'].includes(saved)) setTab(saved);
+}catch(e){}
+
+function copyText(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.select();
+  el.setSelectionRange(0, 999999);
+  (navigator.clipboard ? navigator.clipboard.writeText(el.value) : Promise.reject())
+    .catch(() => { try{ document.execCommand('copy'); }catch(e){} });
+}
+
+// Amap: try open app first, then fallback to web.
+function openAmapQuery(q){
+  const appUrl = "iosamap://path?sourceApplication=ChinaTrip&dname=" + encodeURIComponent(q) + "&dev=0&t=0";
+  const webUrl = "https://uri.amap.com/search?keyword=" + encodeURIComponent(q);
+  let opened = false;
+  const timer = setTimeout(()=>{ if(!opened) window.location.assign(webUrl); }, 1200);
+  window.location.assign(appUrl);
+  // if page becomes hidden quickly, assume app opened
+  const vis = () => {
+    if(document.hidden){ opened = true; clearTimeout(timer); document.removeEventListener('visibilitychange', vis); }
+  };
+  document.addEventListener('visibilitychange', vis);
+}
+
+// Trip progress
+const TRIP_START = new Date(Date.UTC(2026, 3, 8, 0, 0, 0));  // 2026-04-08
+const TRIP_END   = new Date(Date.UTC(2026, 3, 23, 23, 59, 59)); // 2026-04-23
+const DAY_MS = 24*60*60*1000;
+function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+function fmtDate(d){ const dd=String(d.getUTCDate()).padStart(2,'0'); const mm=String(d.getUTCMonth()+1).padStart(2,'0'); return `${dd}.${mm}`; }
+
+function setTodayPill(dayIndex){
+  const pill = document.getElementById('todayPill');
+  const label = document.getElementById('todayLabel');
+  if(!pill || !label) return;
+  if(!dayIndex){ pill.style.display='none'; return; }
+  const map = {
+    1:'8 апр • перелёт',
+    2:'9 апр • Чунцин',
+    3:'10 апр • Чунцин',
+    4:'11 апр • Чунцин',
+    5:'12 апр • Чжанцзяцзе',
+    6:'13 апр • парк',
+    7:'14 апр • парк',
+    8:'15 апр • Фэнхуан',
+    9:'16 апр • Яншо',
+    10:'17 апр • Яншо',
+    11:'18 апр • Яншо',
+    12:'19 апр • Яншо',
+    13:'20 апр • Гуанчжоу',
+    14:'21 апр • Гуанчжоу',
+    15:'22 апр • Гуанчжоу',
+    16:'23 апр • вылет'
+  };
+  label.textContent = map[dayIndex] || `день ${dayIndex}`;
+  pill.style.display='inline-flex';
+}
+
+function openToday(dayIndex){
+  try{
+    if(sessionStorage.getItem('openedToday') === String(dayIndex)) return;
+    const dayId = 'day' + String(dayIndex).padStart(2,'0');
+    const dayEl = document.getElementById(dayId);
+    if(dayEl){
+      const cityEl = dayEl.closest('details.city');
+      if(cityEl) cityEl.open = true;
+      dayEl.open = true;
+      setTimeout(()=> dayEl.scrollIntoView({behavior:'smooth', block:'start'}), 400);
+      sessionStorage.setItem('openedToday', String(dayIndex));
+    }
+  }catch(e){}
+}
+
+function updateProgress(){
+  const now = new Date();
+  const nowUtc = new Date(now.getTime() + now.getTimezoneOffset()*60000);
+  const total = TRIP_END - TRIP_START;
+  const done = nowUtc - TRIP_START;
+  const pct = clamp01(done / total);
+  const p = Math.round(pct*100);
+  const fill = document.getElementById('progressFill');
+  const txt = document.getElementById('progressText');
+  const cd = document.getElementById('countdownText');
+  if(fill) fill.style.width = `${p}%`;
+
+  const daysTotal = Math.floor((TRIP_END - TRIP_START)/DAY_MS) + 1;
+  const dayIndex = Math.floor((nowUtc - TRIP_START)/DAY_MS) + 1;
+
+  if(nowUtc < TRIP_START){
+    txt.textContent = `До поездки: 0% • старт ${fmtDate(TRIP_START)}`;
+    const left = Math.ceil((TRIP_START - nowUtc)/DAY_MS);
+    cd.textContent = `Старт через: ${left} дн.`;
+    setTodayPill(null);
+  } else if(nowUtc > TRIP_END){
+    txt.textContent = `Поездка завершена: 100% • до ${fmtDate(TRIP_END)}`;
+    cd.textContent = `Готово`;
+    setTodayPill(null);
+  } else {
+    txt.textContent = `Прогресс: ${p}% • день ${dayIndex}/${daysTotal}`;
+    const left = Math.ceil((TRIP_END - nowUtc)/DAY_MS);
+    cd.textContent = `Осталось: ${left} дн.`;
+    setTodayPill(dayIndex);
+    // Only auto-open when on Route tab
+    try{ if((localStorage.getItem('activeTab')||'route')==='route') openToday(dayIndex); }catch(e){}
+  }
+}
+
+function exportICS(){
+  const lines = [];
+  const now = new Date();
+  const stamp = now.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+  function dt(y,m,d){ const mm=String(m).padStart(2,'0'); const dd=String(d).padStart(2,'0'); return `${y}${mm}${dd}`; }
+  const items = [
+    ['Перелёт Москва → Пекин', 2026,4,8],
+    ['Пекин → Чунцин + заселение', 2026,4,9],
+    ['Чунцин: прогулки', 2026,4,10],
+    ['Чунцин: подготовка к поезду', 2026,4,11],
+    ['Поезд Чунцин → Чжанцзяцзе + заселение', 2026,4,12],
+    ['Парк Аватара: классический маршрут', 2026,4,13],
+    ['Чжанцзяцзе: второй день', 2026,4,14],
+    ['Поезд Чжанцзяцзе → Фэнхуан', 2026,4,15],
+    ['Фэнхуан → Гуйлинь → Яншо + заселение', 2026,4,16],
+    ['Яншо: Yulong River + Shili Gallery', 2026,4,17],
+    ['Яншо: Xingping + река Ли', 2026,4,18],
+    ['Яншо: подготовка к поезду', 2026,4,19],
+    ['Поезд Яншо → Гуанчжоу + заселение', 2026,4,20],
+    ['Гуанчжоу: Canton Tower', 2026,4,21],
+    ['Гуанчжоу: старый район', 2026,4,22],
+    ['Гуанчжоу → Пекин → Москва', 2026,4,23],
+  ];
+  lines.push('BEGIN:VCALENDAR');
+  lines.push('VERSION:2.0');
+  lines.push('PRODID:-//China Trip//RU');
+  lines.push('CALSCALE:GREGORIAN');
+  items.forEach((it, i)=>{
+    const [title,y,mo,da]=it;
+    const uid = `china-trip-${y}${mo}${da}-${i}@local`;
+    const start = dt(y,mo,da);
+    const endDate = new Date(Date.UTC(y, mo-1, da) + 24*60*60*1000);
+    const end = dt(endDate.getUTCFullYear(), endDate.getUTCMonth()+1, endDate.getUTCDate());
+    lines.push('BEGIN:VEVENT');
+    lines.push('UID:'+uid);
+    lines.push('DTSTAMP:'+stamp);
+    lines.push('SUMMARY:'+title);
+    lines.push('DTSTART;VALUE=DATE:'+start);
+    lines.push('DTEND;VALUE=DATE:'+end);
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  const blob = new Blob([lines.join('\r\n')], {type:'text/calendar;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'china-trip-2026.ics';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+
+// Offline indicator
+function updateOfflinePill(){
+  const pill = document.getElementById('offlinePill');
+  if(!pill) return;
+  const offline = !navigator.onLine;
+  pill.style.display = offline ? 'inline-flex' : 'none';
+}
+window.addEventListener('online', updateOfflinePill);
+window.addEventListener('offline', updateOfflinePill);
+updateOfflinePill();
+
+updateProgress();
+setInterval(updateProgress, 60*1000);
+
+// Register Service Worker (offline)
 if('serviceWorker' in navigator){
-navigator.serviceWorker.register('./sw.js');
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 </script>
 </body>
